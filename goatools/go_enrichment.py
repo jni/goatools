@@ -9,9 +9,7 @@ study genes using Fisher's exact test, and corrected for multiple testing
 (including Bonferroni, Holm, Sidak, and false discovery rate)
 """
 
-import sys
 import collections
-import os.path as op
 import fisher
 from multiple_testing import Bonferroni, Sidak, HolmBonferroni, FDR, calc_qval
 
