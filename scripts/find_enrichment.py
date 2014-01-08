@@ -77,6 +77,8 @@ if __name__ == "__main__":
     p.add_option('--alpha', default=0.05, type="float",
                  help="Test-wise alpha for multiple testing "
                  "[default: %default]")
+    p.add_option('--conditional', default=False,
+                 help="Use conditional test.")
     p.add_option('--pval', default=None, type="float",
                  help="Family-wise alpha (whole experiment), only print out "
                  "Bonferroni p-value is less than this value. "
@@ -121,5 +123,7 @@ if __name__ == "__main__":
 
     obo_dag = GODag(obo_file="gene_ontology.1_2.obo")
     g = GOEnrichmentStudy(pop, assoc, obo_dag, alpha=opts.alpha,
-                          study=study, methods=methods)
+                          study=study, methods=methods,
+                          conditional=opts.conditional)
     g.print_summary(min_ratio=min_ratio, indent=opts.indent, pval=opts.pval)
+

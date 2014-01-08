@@ -22,25 +22,29 @@ fi
 
 echo "select the test from below"
 #select TEST in `seq 1 4`;
-select TEST in 'Test enrichment' 'Test plotting go terms' 'Test mapslim' 'Test mapslim on assocation'
+select TEST in 'Test enrichment' 'Test conditional enrichment' 'Test plotting go terms' 'Test mapslim' 'Test mapslim on assocation'
 
 
 do
 case $REPLY in
 
 1)
-python scripts/find_enrichment.py --alpha=0.05 --indent data/study data/population data/association
+python scripts/find_enrichment.py --alpha=0.05 --indent data/study data/population data/association > result.txt
 ;;
 
 2)
-python scripts/plot_go_term.py --term=GO:0008135
+python scripts/find_enrichment.py --conditional --alpha=0.05 --indent data/study data/population data/association > result-cond.txt
 ;;
 
 3)
-python 'tests/test_mapslim.py'
+python scripts/plot_go_term.py --term=GO:0008135
 ;;
 
 4)
+python 'tests/test_mapslim.py'
+;;
+
+5)
 python scripts/map_to_slim.py --association_file=data/association --slim_out=direct $GO_OBO_FILE $GOSLIM_OBO_FILE
 ;;
 

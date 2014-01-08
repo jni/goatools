@@ -77,7 +77,8 @@ class GOEnrichmentStudy(object):
     """Runs Fisher's exact test, as well as multiple corrections
     """
     def __init__(self, pop, assoc, obo_dag, alpha=.05, study=None,
-                 methods=["bonferroni", "sidak", "holm"]):
+                 methods=["bonferroni", "sidak", "holm"],
+                 conditional=False):
 
         self.pop = pop
         self.assoc = assoc
@@ -85,6 +86,7 @@ class GOEnrichmentStudy(object):
         self.alpha = alpha
         self.methods = methods
         self.results = []
+        self.conditional = conditional
 
         obo_dag.update_association(assoc)
         self.term_pop = count_terms(pop, assoc, obo_dag)
@@ -102,11 +104,14 @@ class GOEnrichmentStudy(object):
         for term, study_count in term_study.items():
             pop_count = self.term_pop[term]
             p = fisher.pvalue_population(study_count, study_n,
-                                         pop_count, pop_n)
+                                         pop_count, pop_n).right_tail
 
+            if self.conditional:
+                p /= fisher.pvalue_population(1, study_n, pop_count,
+                                              pop_n).right_tail
             one_record = GOEnrichmentRecord(
                 id=term,
-                p_uncorrected=p.two_tail,
+                p_uncorrected=p,
                 ratio_in_study=(study_count, study_n),
                 ratio_in_pop=(pop_count, pop_n))
 
